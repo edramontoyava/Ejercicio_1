@@ -1,6 +1,6 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>Store</ion-title>
+    <ion-title>Filtrar</ion-title>
   </ion-toolbar>
 </ion-header>
 <ion-content [fullscreen]="true">
@@ -36,19 +36,16 @@
           <ion-card-content>
             {{product.description}}
           </ion-card-content>
-          <ion-row>
-            <ion-col size="2">
-              <ion-item>
-                <ion-input #productQuantity type="number" min="1" value="1"></ion-input>
-              </ion-item>
-            </ion-col>
-            <ion-col size="3">
-              <ion-button (click)="addToCart(product, productQuantity)">Agregar</ion-button>
-            </ion-col>
-          </ion-row>
+          <ion-button (click)="addToCart(product.name, product.price)">Agregar</ion-button>
         </ion-card>
       </ion-col>
+      <ion-list>
+        <ion-list-header>Carrito de compras</ion-list-header>
+        <ion-item *ngFor="let item of carrito">
+          {{ item.nombre }} - Cantidad: {{ item.cantidad }} - Total: {{ item.precioTotal | currency }}
+        </ion-item>
+        <ion-list-header>TOTAL: {{ totalGeneral | currency }}</ion-list-header>
+      </ion-list>
     </ion-row>
   </ion-grid>
-  
 </ion-content>
