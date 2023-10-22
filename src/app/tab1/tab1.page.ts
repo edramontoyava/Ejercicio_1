@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { Product } from '../models/product.model';
+import { CarritoService } from '../models/carrito.service';
+import { AlertController } from '@ionic/angular';
 
 @Component({
   selector: 'app-tab1',
@@ -15,7 +17,7 @@ export class Tab1Page {
   totalGeneral: number = 0;
 
 
-  constructor() {
+  constructor(private carritoService: CarritoService,private alertController: AlertController) {
     this.products.push({
       name: "Coca-cola",
       photo: "https://picsum.photos/500/300?random=",
@@ -117,23 +119,6 @@ export class Tab1Page {
     }
   }
 
-  addToCart(productName: string, productPrice: number) {
-    const index = this.carrito.findIndex(item => item.nombre === productName);
-
-    if (index !== -1) {
-      this.carrito[index].cantidad++;
-      this.carrito[index].precioTotal = this.carrito[index].cantidad * this.carrito[index].precio;
-    } else {
-      this.carrito.push({ nombre: productName, precio: productPrice, cantidad: 1, precioTotal: productPrice });
-    }
-
-    this.actualizarTotalGeneral();
-  }
-
-  actualizarTotalGeneral() {
-    this.totalGeneral = this.carrito.reduce((total, item) => total + item.precioTotal, 0);
-  }
-
   get filteredProducts() {
     if (this.selectedFilter === 'all') {
       return this.products;
@@ -141,4 +126,30 @@ export class Tab1Page {
       return this.products.filter(product => product.type === this.selectedFilter);
     }
   }
+
+  async addToCart(product: Product, quantityInput: any) {
+    const quantity = parseInt(quantityInput.value, 10);
+  
+    if (quantity > 0) {
+      for (let i = 0; i < quantity; i++) {
+        this.carritoService.agregarAlCarrito(product);
+      }
+
+      this.carritoService.cantidadElementosCarrito += quantity;
+      
+      const alert = await this.alertController.create({
+        header: 'Producto Agregado',
+        message: `${product.name} se ha agregado al carrito (unidades: ${quantity}).`,
+        buttons: ['OK']
+      });
+  
+      await alert.present();
+
+      quantityInput.value = "1";
+    }
+  }
+  
+  
+  
+  
 }

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-
+import { CarritoService } from '../models/carrito.service';
 @Component({
   selector: 'app-tabs',
   templateUrl: 'tabs.page.html',
@@ -7,6 +7,6 @@ import { Component } from '@angular/core';
 })
 export class TabsPage {
 
-  constructor() {}
+  constructor(public carritoService: CarritoService) {}
 
 }
