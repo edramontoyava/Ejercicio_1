@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { CarritoService } from '../models/carrito.service';
+import { CarritoService } from '../services/carrito.service';
 @Component({
   selector: 'app-tabs',
   templateUrl: 'tabs.page.html',

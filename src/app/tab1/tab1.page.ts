@@ -1,14 +1,16 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Product } from '../models/product.model';
-import { CarritoService } from '../models/carrito.service';
+import { CarritoService } from '../services/carrito.service';
 import { AlertController } from '@ionic/angular';
+import { FirestoreService } from '../services/firestore.service';
+import { Route, Router } from '@angular/router';
 
 @Component({
   selector: 'app-tab1',
   templateUrl: 'tab1.page.html',
   styleUrls: ['tab1.page.scss']
 })
-export class Tab1Page {
+export class Tab1Page implements OnInit {
 
   public products: Product[] = [];
   selectedFilter: string = 'all';
@@ -17,91 +19,24 @@ export class Tab1Page {
   totalGeneral: number = 0;
 
 
-  constructor(private carritoService: CarritoService,private alertController: AlertController) {
-    this.products.push({
-      name: "Coca-cola",
-      photo: "https://picsum.photos/500/300?random=",
-      price: 20,
-      type: "Abarrotes",
-      description: "Refresco de 600 ml"
-    });
-    this.products.push({
-      name: "Zanahoria",
-      photo: "https://picsum.photos/500/300?random=",
-      price: 20,
-      type: "Frutas y verduras",
-      description: "$20 el kilo"
-    });
-    this.products.push({
-      name: "Loratadina",
-      photo: "https://picsum.photos/500/300?random=",
-      price: 20,
-      type: "Farmacia",
-      description: "Para alergias"
-    });
-    this.products.push({
-      name: "Pinol",
-      photo: "https://picsum.photos/500/300?random=",
-      price: 35,
-      type: "Limpieza",
-      description: "Limpiador"
-    });
-    this.products.push({
-      name: "Sprite",
-      photo: "https://picsum.photos/500/300?random=",
-      price: 20,
-      type: "Abarrotes",
-      description: "Refresco de 600 ml"
-    });
-    this.products.push({
-      name: "Manzanas",
-      photo: "https://picsum.photos/500/300?random=",
-      price: 30,
-      type: "Frutas y verduras",
-      description: "$30 el kilo"
-    });
-    this.products.push({
-      name: "Aspirina",
-      photo: "https://picsum.photos/500/300?random=",
-      price: 10,
-      type: "Farmacia",
-      description: "Para dolores leves"
-    });
-    this.products.push({
-      name: "Detergente",
-      photo: "https://picsum.photos/500/300?random=",
-      price: 40,
-      type: "Limpieza",
-      description: "Para ropa"
-    });
-    this.products.push({
-      name: "Frijoles",
-      photo: "https://picsum.photos/500/300?random=",
-      price: 15,
-      type: "Abarrotes",
-      description: "Paquete de 1 kg"
-    });
-    this.products.push({
-      name: "Naranjas",
-      photo: "https://picsum.photos/500/300?random=",
-      price: 25,
-      type: "Frutas y verduras",
-      description: "$25 el kilo"
-    });
-    this.products.push({
-      name: "Ibuprofeno",
-      photo: "https://picsum.photos/500/300?random=",
-      price: 15,
-      type: "Farmacia",
-      description: "Para inflamaciones"
-    });
-    this.products.push({
-      name: "Lavaplatos",
-      photo: "https://picsum.photos/500/300?random=",
-      price: 25,
-      type: "Limpieza",
-      description: "Para platos"
-    });
+  constructor(private carritoService: CarritoService,
+              private alertController: AlertController,
+              private database:FirestoreService,
+              private router:Router) {
+    
+  }
+  ngOnInit() {
+    this.getresult();
+  }
+
+  getresult(){
+    this.database.getCollection<Product>("Products").subscribe(res =>{
+      this.products=res;
+    })
+  }
+
+  navegarAjustes() {
+    this.router.navigate(['/ajustes']);
   }
 
   getBadgeColor(productType: string): string {

@@ -2,12 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { Product } from 'src/app/models/product.model';
 import { FirestoreService } from 'src/app/services/firestore.service';
 import { InteractionService } from 'src/app/services/interaction.service';
+
 @Component({
-  selector: 'app-tab3',
-  templateUrl: 'tab3.page.html',
-  styleUrls: ['tab3.page.scss']
+  selector: 'app-ajustes',
+  templateUrl: './ajustes.component.html',
+  styleUrls: ['./ajustes.component.scss'],
 })
-export class Tab3Page implements OnInit {
+export class AjustesComponent  implements OnInit {
 
   data:Product ={
       name: "",
@@ -32,11 +33,6 @@ export class Tab3Page implements OnInit {
     this.data.id=id;
     this.database.createDoc(this.data,path,id).then(()=>{
       this.interaction.closeLoading();
-      this.data.name = '';
-      this.data.price =0;
-      this.data.description = '';
-      this.data.type = '';
-      this.data.photo = '';
       this.interaction.presentToast("Guardado con exito")
     })   
   }
