@@ -7,7 +7,5 @@ import { CarritoService } from '../models/carrito.service';
   styleUrls: ['tab2.page.scss']
 })
 export class Tab2Page {
-
   constructor(public carritoService: CarritoService) {}
-
 }
