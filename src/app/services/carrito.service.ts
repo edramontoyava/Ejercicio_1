@@ -5,9 +5,12 @@ import { Product } from '../models/product.model';
   providedIn: 'root'
 })
 export class CarritoService {
-  carrito: { nombre: string; precio: number; cantidad: number; precioTotal: number }[] = [];
+  constructor() {}
+  carrito: { nombre: string; precio: number; cantidad: number; precioTotal: number; foto: string }[] = [];
   totalGeneral: number = 0;
   public cantidadElementosCarrito: number = 0;
+  productosFavoritos: Product[] = [];
+
   agregarAlCarrito(producto: Product) {
     const index = this.carrito.findIndex(item => item.nombre === producto.name);
 
@@ -19,14 +22,38 @@ export class CarritoService {
         nombre: producto.name,
         precio: producto.price,
         cantidad: 1,
-        precioTotal: producto.price
+        precioTotal: producto.price,
+        foto: producto.photo
       });
     }
-
+    this.cantidadElementosCarrito+1;
     this.actualizarTotalGeneral();
+  }
+
+  cambiarCantidad(producto: { nombre: string; precio: number; cantidad: number; precioTotal: number; foto: string }, nuevaCantidad: number) {
+    if (nuevaCantidad >= 1) {
+      producto.cantidad = nuevaCantidad;
+      producto.precioTotal = nuevaCantidad * producto.precio;
+      this.actualizarTotalGeneral();
+    }
+    this.actualizarCantidadElementosCarrito()
+  }
+  
+  eliminarDelCarrito(nombreProducto: string) {
+    const index = this.carrito.findIndex(item => item.nombre === nombreProducto);
+    if (index !== -1) {
+      this.cantidadElementosCarrito -= this.carrito[index].cantidad;
+      this.carrito.splice(index, 1);
+      this.actualizarTotalGeneral();
+    }
   }
 
   actualizarTotalGeneral() {
     this.totalGeneral = this.carrito.reduce((total, item) => total + item.precioTotal, 0);
   }
+
+  actualizarCantidadElementosCarrito() {
+    this.cantidadElementosCarrito = this.carrito.reduce((total, item) => total + item.cantidad, 0);
+  }
+  
 }

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CarritoService } from '../services/carrito.service';
 
 @Component({
@@ -8,6 +8,17 @@ import { CarritoService } from '../services/carrito.service';
 })
 export class Tab2Page {
 
+  cantidadElementosCarrito: number = 0;
   constructor(public carritoService: CarritoService) {}
 
+  
+  cambiarCantidad(item: { nombre: string; precio: number; cantidad: number; precioTotal: number; foto: string }, nuevaCantidad: number) {
+   
+    this.carritoService.cambiarCantidad(item, nuevaCantidad);
+  }
+
+  eliminarDelCarrito(nombreProducto: string) {
+    
+    this.carritoService.eliminarDelCarrito(nombreProducto);
+  }
 }

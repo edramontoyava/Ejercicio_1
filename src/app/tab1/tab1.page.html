@@ -1,6 +1,6 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>Store</ion-title>
+    <ion-title>Tienda</ion-title>
   </ion-toolbar>
 </ion-header>
 <ion-content [fullscreen]="true">
@@ -44,11 +44,13 @@
             </ion-col>
             <ion-col size="3">
               <ion-button (click)="addToCart(product, productQuantity)">Agregar</ion-button>
+              <ion-button (click)="isFavorite(product) ? toggleFavorite(product): addToFavorites(product)">
+                {{isFavorite(product) ? 'Quitar de Favoritos' : 'Agregar a Favoritos' }}
+              </ion-button>
             </ion-col>
           </ion-row>
         </ion-card>
       </ion-col>
     </ion-row>
   </ion-grid>
-  
 </ion-content>

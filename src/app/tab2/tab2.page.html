@@ -3,20 +3,35 @@
     <ion-title>Carrito de Compras</ion-title>
   </ion-toolbar>
 </ion-header>
+
 <ion-content [fullscreen]="true">
   <ion-list>
-    <ion-item>
-      <ion-label>Producto</ion-label>
-      <ion-label>Cantidad</ion-label>
-      <ion-label>Subtotal</ion-label>
+    <ion-item class="cart-header">
+      <ion-label class="product-label"></ion-label>
+      <ion-label class="product-label">Producto</ion-label>
+      <ion-label class="quantity-label">Cantidad</ion-label>
+      <ion-label class="price-label">Precio</ion-label>
+      <ion-label class="subtotal-label">Subtotal</ion-label>
+      <ion-label class="remove-label"></ion-label>
     </ion-item>
-    <ion-item *ngFor="let item of carritoService.carrito">
-      <ion-label>{{ item.nombre }}</ion-label>
-      <ion-label>{{ item.cantidad }}</ion-label>
-      <ion-label>{{ item.precioTotal | currency }}</ion-label>
-    </ion-item>
+    <ion-grid>
+      <ion-row class="cart-item" *ngFor="let item of carritoService.carrito; index as i">
+        <ion-col size="2">
+          <ion-img [src]="item.foto+i" class="product-image"></ion-img>
+        </ion-col>
+        <ion-col size="2" class="product-label">{{ item.nombre }}</ion-col>
+        <ion-col size="2" class="quantity-label">
+          <ion-input [(ngModel)]="item.cantidad" (ionChange)="cambiarCantidad(item, item.cantidad)" type="number" size="2" min="1"></ion-input>
+        </ion-col>
+        <ion-col size="2" class="price-label">{{ item.precio | currency }}</ion-col>
+        <ion-col size="2" class="subtotal-label">{{ item.precioTotal | currency }}</ion-col>
+        <ion-col size="1" class="remove-icon-col">
+          <ion-icon (click)="eliminarDelCarrito(item.nombre)" name="close" class="remove-icon"></ion-icon>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
   </ion-list>
   <ion-list>
-    <ion-list-header>TOTAL: {{ carritoService.totalGeneral | currency }}</ion-list-header>
+    <ion-list-header class="total-header">TOTAL: {{ carritoService.totalGeneral | currency }}</ion-list-header>
   </ion-list>
 </ion-content>

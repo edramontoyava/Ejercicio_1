@@ -4,7 +4,7 @@ import { CarritoService } from '../services/carrito.service';
 import { AlertController } from '@ionic/angular';
 import { FirestoreService } from '../services/firestore.service';
 import { Route, Router } from '@angular/router';
-
+import { InteractionService } from 'src/app/services/interaction.service';
 @Component({
   selector: 'app-tab1',
   templateUrl: 'tab1.page.html',
@@ -22,8 +22,9 @@ export class Tab1Page implements OnInit {
   constructor(private carritoService: CarritoService,
               private alertController: AlertController,
               private database:FirestoreService,
-              private router:Router) {
-    
+              private router:Router,
+              private interaction:InteractionService) {
+
   }
   ngOnInit() {
     this.getresult();
@@ -33,10 +34,6 @@ export class Tab1Page implements OnInit {
     this.database.getCollection<Product>("Products").subscribe(res =>{
       this.products=res;
     })
-  }
-
-  navegarAjustes() {
-    this.router.navigate(['/ajustes']);
   }
 
   getBadgeColor(productType: string): string {
@@ -62,29 +59,39 @@ export class Tab1Page implements OnInit {
     }
   }
 
-  async addToCart(product: Product, quantityInput: any) {
+  addToCart(product: Product, quantityInput: any) {
     const quantity = parseInt(quantityInput.value, 10);
   
     if (quantity > 0) {
       for (let i = 0; i < quantity; i++) {
         this.carritoService.agregarAlCarrito(product);
       }
-
       this.carritoService.cantidadElementosCarrito += quantity;
-      
-      const alert = await this.alertController.create({
-        header: 'Producto Agregado',
-        message: `${product.name} se ha agregado al carrito (unidades: ${quantity}).`,
-        buttons: ['OK']
-      });
-  
-      await alert.present();
-
+      this.interaction.presentToast(`Se agrego ${quantity} ${product.name}(s) al carrito`);
       quantityInput.value = "1";
     }
   }
   
+  isFavorite(product: Product): boolean {
+    return this.carritoService.productosFavoritos.includes(product);
+  }
   
-  
-  
+  addToFavorites(product: Product) {
+    if (this.isFavorite(product)) {
+      this.carritoService.productosFavoritos = this.carritoService.productosFavoritos.filter(
+        (item) => item !== product
+      );
+    } else {
+      this.carritoService.productosFavoritos.push(product);
+    }
+  }
+  toggleFavorite(product: Product) {
+    const index = this.carritoService.productosFavoritos.findIndex(
+      (item) => item === product
+    );
+    if (index !== -1) {
+      this.carritoService.productosFavoritos.splice(index, 1);
+    }
+  }
+   
 }

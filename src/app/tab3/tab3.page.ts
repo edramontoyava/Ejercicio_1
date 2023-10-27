@@ -1,43 +1,58 @@
 import { Component, OnInit } from '@angular/core';
-import { Product } from 'src/app/models/product.model';
-import { FirestoreService } from 'src/app/services/firestore.service';
-import { InteractionService } from 'src/app/services/interaction.service';
+import { Product } from '../models/product.model';
+import { CarritoService } from '../services/carrito.service';
+import { InteractionService } from '../services/interaction.service';
+
 @Component({
   selector: 'app-tab3',
   templateUrl: 'tab3.page.html',
-  styleUrls: ['tab3.page.scss']
+  styleUrls: ['tab3.page.scss'],
 })
 export class Tab3Page implements OnInit {
+  favoriteProducts: Product[] = [];
+  quantityInput: number = 1;
 
-  data:Product ={
-      name: "",
-      photo: "",
-      price: 0,
-      type: "",
-      description:"",
-      id:"",
-  }
-
-  constructor(private database: FirestoreService,
-              private interaction:InteractionService) { }
+  constructor(private carritoService: CarritoService,
+              private interaction:InteractionService) {}
 
   ngOnInit() {
-    
+    this.favoriteProducts = this.carritoService.productosFavoritos;
   }
 
-  addproduct(){
-    this.interaction.presentLoading('Guardando...')
-    const path='Products'
-    const id = this.database.getId();
-    this.data.id=id;
-    this.database.createDoc(this.data,path,id).then(()=>{
-      this.interaction.closeLoading();
-      this.data.name = '';
-      this.data.price =0;
-      this.data.description = '';
-      this.data.type = '';
-      this.data.photo = '';
-      this.interaction.presentToast("Guardado con exito")
-    })   
+  getBadgeColor(productType: string): string {
+    switch (productType) {
+      case 'Abarrotes':
+        return 'primary';
+      case 'Frutas y verduras':
+        return 'warning';
+      case 'Farmacia':
+        return 'danger';
+      case 'Limpieza':
+        return 'medium';
+      default:
+        return 'dark';
+    }
   }
+
+  addToCart(product: Product, quantityInput: any) {
+    const quantity = parseInt(quantityInput.value, 10);
+    if (quantity > 0) {
+      for (let i = 0; i < quantity; i++) {
+        this.carritoService.agregarAlCarrito(product);
+      }
+      this.carritoService.cantidadElementosCarrito += quantity;
+      this.interaction.presentToast(`Se agrego ${quantity} ${product.name}(s) al carrito`);
+      quantityInput.value = "1";
+    }
+  }
+
+  toggleFavorite(product: Product) {
+    const index = this.carritoService.productosFavoritos.findIndex(
+      (item) => item === product
+    );
+    if (index !== -1) {
+      this.carritoService.productosFavoritos.splice(index, 1);
+    }
+  }
+  
 }
