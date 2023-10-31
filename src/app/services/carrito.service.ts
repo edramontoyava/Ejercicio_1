@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Product } from '../models/product.model';
+import { buys } from '../models/shopping.model';
+import { ProductSold } from '../models/shopping.model';
 
 @Injectable({
   providedIn: 'root'
@@ -10,6 +12,7 @@ export class CarritoService {
   totalGeneral: number = 0;
   public cantidadElementosCarrito: number = 0;
   productosFavoritos: Product[] = [];
+  comprasRealizadas: buys[] = [];
 
   agregarAlCarrito(producto: Product) {
     const index = this.carrito.findIndex(item => item.nombre === producto.name);
@@ -55,5 +58,17 @@ export class CarritoService {
   actualizarCantidadElementosCarrito() {
     this.cantidadElementosCarrito = this.carrito.reduce((total, item) => total + item.cantidad, 0);
   }
-  
+
+  agregarCompra(fechaHora: string, productos: ProductSold[], total: number) {
+    const compra: buys = {
+      datehour: fechaHora,
+      products: productos,
+      total: total
+    };
+    this.comprasRealizadas.push(compra);
+    this.cantidadElementosCarrito=0;
+  }
+  obtenerCompras(): buys[] {
+    return this.comprasRealizadas;
+  }
 }

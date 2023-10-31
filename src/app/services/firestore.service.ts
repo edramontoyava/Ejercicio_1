@@ -20,6 +20,7 @@ export class FirestoreService {
   getId(){
     return this.firestore.createId();
   }
+  
   getCollection<tipo>(path:string){
     const collection= this.firestore.collection<tipo>(path)
     return collection.valueChanges();
